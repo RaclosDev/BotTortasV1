@@ -1,3 +1,2 @@
   
-web: jar BotTortas.jar $ARGS_AND_FLAGS
-worker: jar BotTortas.jar $ARGS_AND_FLAGS
+web: java -jar BotTortas.jar "NzUyNTk2MDQ5Njc5MzUxODM3.X1Z7sA.vAhOlH7nPsAUDOEIhsKddyDRkSM"
