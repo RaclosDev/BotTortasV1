@@ -1,2 +1,3 @@
   
-web: eltortasbot $ARGS_AND_FLAGS
+web: jar BotTortas.jar $ARGS_AND_FLAGS
+worker: jar BotTortas.jar $ARGS_AND_FLAGS
