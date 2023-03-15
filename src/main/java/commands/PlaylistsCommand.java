@@ -1,11 +1,15 @@
 package commands;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-
-public class PlaylistsCommand implements Command {
+@Getter
+@Setter
+public class PlaylistsCommand implements BotCommand {
 
     final String commandName = "playlists";
+    final String description = ":white_small_square: !" + commandName + ": Despliega una lista de las playlists";
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
@@ -23,15 +27,4 @@ public class PlaylistsCommand implements Command {
         ).submit();
     }
 
-    @Override
-    public void info(SlashCommandInteractionEvent event) {
-        MessageChannel channel = event.getChannel();
-
-        channel.sendMessage(":white_small_square: !" + commandName + ": Despliega una lista de las playlists").submit();
-    }
-
-    @Override
-    public String getName() {
-        return commandName;
-    }
 }

@@ -1,5 +1,7 @@
 package commands;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -7,10 +9,12 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.List;
-
-public class AmongAdminCommand implements Command {
+@Getter
+@Setter
+public class AmongAdminCommand implements BotCommand {
 
     final String commandName = "admin";
+    final String description = ":white_small_square: !" + commandName + ": Asigna el rol admin en el chat, para que al mutearte mutee a todos";
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
@@ -31,17 +35,5 @@ public class AmongAdminCommand implements Command {
             guild.addRoleToMember(event.getMember(), amongAdminRole).queue();
             channel.sendMessage(event.getMember().getAsMention() + " Es el nuevo administrador para la partida").submit();
         }
-    }
-
-
-    @Override
-    public void info(SlashCommandInteractionEvent event) {
-        event.getChannel().sendMessage(
-                ":white_small_square: !" + commandName + ": Asigna el rol admin en el chat, para que al mutearte mutee a todos").submit();
-    }
-
-    @Override
-    public String getName() {
-        return commandName;
     }
 }

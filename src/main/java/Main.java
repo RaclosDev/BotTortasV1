@@ -11,60 +11,63 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Slf4j
 public class Main extends ListenerAdapter {
 
     public static final ArrayList<ListenerAdapter> listeners = new ArrayList<>();
-    public static final ArrayList<Command> COMMANDS = new ArrayList<>();
+    public static final HashMap<String, BotCommand> COMMANDS = new HashMap<>();
 
     public static void main(String[] args) {
-
-        commandsBuilder();
 
         if (args.length < 1) {
             System.out.println("You have to provide a token as first argument!");
             System.exit(1);
         }
+        botCommandsBuilder();
+        log.info("Comandos creados");
         Gui gui = new Gui();
         gui.setVisible(true);
+        log.info("GUI creada");
 
         JDABuilder jdaBuilder = JDABuilder.createDefault(args[0]);
         jdaBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         jdaBuilder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
         setListeners();
-
         addAllEventListeners(jdaBuilder);
-
+        log.info("Listeners creados");
         JDA jda = jdaBuilder
                 .addEventListeners(new Main())
                 .setActivity(Activity.playing("Type /info"))
                 .build();
-
-        // Sets the global command list to the provided commands (removing all others)
         jda.updateCommands().addCommands(
                 Commands.slash("ping", "Calculate ping of the bot"),
                 Commands.slash("clear", "Clear x msg").addOption(OptionType.INTEGER, "number", "number of msg to delete"),
                 Commands.slash("info", "Shows info")
         ).queue();
+        log.info("Slash Commands creados");
     }
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        // make sure we handle the right command
-        switch (event.getName()) {
-            case "ping":
-                long time = System.currentTimeMillis();
-                event.reply("Pong!") // reply or acknowledge
-                        .flatMap(v ->
-                                event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time) // then edit original
-                        ).queue(); // Queue both reply and edit
-                break;
-            case "clear":
-                new ClearCommand().execute(event);
-                break;
-            case "info":
-                new InfoCommand().execute(event);
-                break;
+        try {
+            switch (event.getName()) {
+                case "ping":
+                    log.info("Se hallamado a /ping");
+                    COMMANDS.get("ping").execute(event);
+                    break;
+                case "clear":
+                    log.info("Se hallamado a /clear");
+                    COMMANDS.get("clear").execute(event);
+                    break;
+                case "info":
+                    log.info("Se hallamado a /info");
+                    COMMANDS.get("info").execute(event);
+                    break;
+            }
+        } catch (NullPointerException e) {
+            log.error("No se ha encontrado el comando: " + event.getName() + " en COMMANDS");
         }
     }
 
@@ -78,11 +81,14 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    public static void commandsBuilder() {
-        COMMANDS.add(new AmongAdminCommand());
-        COMMANDS.add(new InfoCommand());
-        COMMANDS.add(new PersoLolCommand());
-        COMMANDS.add(new OnTwitchCommand());
-        COMMANDS.add(new PlaylistsCommand());
+    public static void botCommandsBuilder() {
+        COMMANDS.put("admin", new AmongAdminCommand());
+        COMMANDS.put("info", new InfoCommand());
+        COMMANDS.put("persolol", new PersoLolCommand());
+        COMMANDS.put("twitch", new OnTwitchCommand());
+        COMMANDS.put("playlist", new PlaylistsCommand());
+        COMMANDS.put("clear", new ClearCommand());
+        COMMANDS.put("ping", new PingCommand());
+        COMMANDS.forEach((key, value) -> log.info("Created command: " + value.getCommandName()));
     }
 }

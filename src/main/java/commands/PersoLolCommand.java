@@ -1,5 +1,7 @@
 package commands;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -7,10 +9,12 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-public class PersoLolCommand implements Command {
+@Getter
+@Setter
+public class PersoLolCommand implements BotCommand {
 
     final String commandName = "persolol";
+    final String description = ":white_small_square: !" + commandName + ": Hace equipos random y los mueve a sus salas correspondientes";
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
@@ -81,10 +85,6 @@ public class PersoLolCommand implements Command {
         thread.start();
     }
 
-    @Override
-    public void info(SlashCommandInteractionEvent event) {
-        event.getChannel().sendMessage(":white_small_square: !" + commandName + ": Hace equipos random y los mueve a sus salas correspondientes").submit();
-    }
 
     public ArrayList<String> fillWithRandoms(ArrayList<String> jugadoresCustom) {
         int i = 1;
@@ -93,10 +93,5 @@ public class PersoLolCommand implements Command {
             i++;
         }
         return jugadoresCustom;
-    }
-
-    @Override
-    public String getName() {
-        return commandName;
     }
 }
