@@ -1,40 +1,32 @@
 package commands;
 
+import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.List;
 
-public class ClearCommand implements Command {
+@Getter
+public class ClearCommand {
 
-    String commandName = "clear";
+    final String commandName = "clear";
 
-    @Override
-    public void execute(MessageReceivedEvent event) {
+    public void execute(SlashCommandInteractionEvent event) {
         MessageChannel channel = event.getChannel();
-        String[] args = event.getMessage().getContentRaw().split("\\s+");
-        if (args.length == 2) {
-            if (Integer.parseInt(args[1]) < 1 || Integer.parseInt(args[1]) > 100) {
-                channel.sendMessage("Solo puedes borrar entre 1 y 100 mensajes").submit();
-            } else {
-                List<Message> messages = channel.getHistory().retrievePast(Integer.parseInt(args[1])).complete();
-                channel.purgeMessages(messages);
-            }
+        int messagesToDelete = event.getOption("number", OptionMapping::getAsInt);
 
+        if (messagesToDelete < 1 || messagesToDelete > 100) {
+            event.reply("Solo puedes borrar entre 1 y 100 mensajes").queue();
         } else {
-            channel.sendMessage("El formato del comando debe ser: !tclear <numMensajes>").submit();
+            List<Message> messages = channel.getHistory().retrievePast(messagesToDelete).complete();
+            channel.purgeMessages(messages);
+            event.reply("Se han eliminado los ultimos " + messagesToDelete + " mensajes.").queue();
         }
     }
 
-    @Override
-    public void info(MessageReceivedEvent event) {
+    public void info(SlashCommandInteractionEvent event) {
         event.getChannel().sendMessage(":white_small_square: !" + commandName + ": Borra x mensajes, el formato es: !clear <numMensajes>").submit();
-    }
-
-    @Override
-    public String getName() {
-        return commandName;
     }
 }

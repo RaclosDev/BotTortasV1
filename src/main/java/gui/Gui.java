@@ -1,9 +1,6 @@
 package gui;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Gui extends JFrame{
     private JButton apagarButton;
@@ -17,11 +14,6 @@ public class Gui extends JFrame{
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        apagarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        apagarButton.addActionListener(e -> System.exit(0));
     }
 }

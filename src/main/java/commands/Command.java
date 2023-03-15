@@ -1,10 +1,10 @@
 package commands;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 public interface Command {
     
-    public void execute(MessageReceivedEvent event);
-    public void info(MessageReceivedEvent event);
-    public String getName();
+    void execute(SlashCommandInteractionEvent event);
+    void info(SlashCommandInteractionEvent event);
+    String getName();
 }

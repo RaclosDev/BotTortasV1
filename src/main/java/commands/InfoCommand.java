@@ -1,27 +1,23 @@
 package commands;
 
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 public class InfoCommand implements Command {
 
-    String commandName = "info";
+    final String commandName = "info";
 
     @Override
-    public void execute(MessageReceivedEvent event) {
-        MessageChannel channel = event.getChannel();
+    public void execute(SlashCommandInteractionEvent event) {
         new AmongAdminCommand().info(event);
         new ClearCommand().info(event);
         new InfoCommand().info(event);
         new PersoLolCommand().info(event);
         new PlaylistsCommand().info(event);
-        new ReminMeLaterCommand().info(event);
-
-
     }
 
     @Override
-    public void info(MessageReceivedEvent event) {
+    public void info(SlashCommandInteractionEvent event) {
         MessageChannel channel = event.getChannel();
 
         channel.sendMessage(":white_small_square: !" + commandName + ": Con este comando puedes ver que hace el bot, aunque si lo estas leyendo es porque ya lo has usado xd").submit();

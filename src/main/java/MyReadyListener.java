@@ -1,46 +1,31 @@
-import commands.*;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.api.events.DisconnectEvent;
-import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfMuteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MyReadyListener extends ListenerAdapter {
     @Override
-    public void onReady(ReadyEvent event) {
+    public void onReady(@NotNull ReadyEvent event) {
         System.out.println("I am ready to go!");
     }
 
     @Override
-    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        super.onMessageReceived(event);
-        MessageChannel channel = event.getChannel();
-        MessageChannel djChannel = event.getGuild().getTextChannelById("585605197590560789");
-        String[] args = event.getMessage().getContentRaw().split("\\s+");
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
-        if (channel.equals(djChannel)) {
-            autoPlayDj.execute(event);
-        }
-
-        for (Command command : Main.COMMANDS) {
-            if ((Main.PREFIX + command.getName()).equals(args[0])) {
-                command.execute(event);
-            }
-        }
     }
 
 
     @Override
-    public void onGuildVoiceSelfMute(@Nonnull GuildVoiceSelfMuteEvent event) {
+    public void onGuildVoiceSelfMute(@NotNull GuildVoiceSelfMuteEvent event) {
         super.onGuildVoiceSelfMute(event);
 
         Role adminRole = event.getGuild().getRoleById("752620153686196245");
@@ -67,13 +52,7 @@ public class MyReadyListener extends ListenerAdapter {
     }
 
     @Override
-    public void onDisconnect(@Nonnull DisconnectEvent event) {
-        super.onDisconnect(event);
-        System.out.println("Chao");
-    }
-
-    @Override
-    public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(@NonNull GuildMemberJoinEvent event) {
         super.onGuildMemberJoin(event);
 
         String userId = event.getMember().getUser().getId();
@@ -84,6 +63,12 @@ public class MyReadyListener extends ListenerAdapter {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        MessageChannel channel = event.getGuild().getTextChannelById("585585676141985804");
+
+        channel.sendMessage("Pssssssss  " + event.getMember().getAsMention() + ", me he estado fijando como entrenas, " +
+                "y si tomas estas pastillitas seguro que te pones como el suasenaguer ese, la primera es gratis que me dices. ").queue();
+        channel.sendMessage(event.getUser().getEffectiveAvatarUrl()).queue();
 
     }
 }
