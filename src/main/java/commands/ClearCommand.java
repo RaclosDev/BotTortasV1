@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 public class ClearCommand implements BotCommand{
 
-    private final String commandName = "clear";
+    private final String commandName = "BORRA";
     private final String description = ":white_small_square: !" + commandName + ": Borra x mensajes, el formato es: !clear <numMensajes>";
 
     public void execute(SlashCommandInteractionEvent event) {

@@ -4,9 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
@@ -41,11 +44,10 @@ public class Main extends ListenerAdapter {
                 .addEventListeners(new Main())
                 .setActivity(Activity.playing("Type /info"))
                 .build();
-        jda.updateCommands().addCommands(
-                Commands.slash("ping", "Calculate ping of the bot"),
-                Commands.slash("clear", "Clear x msg").addOption(OptionType.INTEGER, "number", "number of msg to delete"),
-                Commands.slash("info", "Shows info")
-        ).queue();
+
+        COMMANDS.forEach((string, botCommand) -> {
+            jda.upsertCommand(string,botCommand.getDescription()).queue();
+        });
         log.info("Slash Commands creados");
     }
 
@@ -70,6 +72,14 @@ public class Main extends ListenerAdapter {
             log.error("No se ha encontrado el comando: " + event.getName() + " en COMMANDS");
         }
     }
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event) {
+        Message message = event.getMessage();
+
+        if (message.getContentRaw().equals("!hola")) {
+            message.getChannel().sendMessage("Hola, mundo!");
+        }
+    }
 
     public static void setListeners() {
         listeners.add(new MyReadyListener());
@@ -82,12 +92,12 @@ public class Main extends ListenerAdapter {
     }
 
     public static void botCommandsBuilder() {
-        COMMANDS.put("admin", new AmongAdminCommand());
+        COMMANDS.put("amongus", new AmongAdminCommand());
         COMMANDS.put("info", new InfoCommand());
         COMMANDS.put("persolol", new PersoLolCommand());
         COMMANDS.put("twitch", new OnTwitchCommand());
         COMMANDS.put("playlist", new PlaylistsCommand());
-        COMMANDS.put("clear", new ClearCommand());
+        COMMANDS.put("borra", new ClearCommand());
         COMMANDS.put("ping", new PingCommand());
         COMMANDS.forEach((key, value) -> log.info("Created command: " + value.getCommandName()));
     }
